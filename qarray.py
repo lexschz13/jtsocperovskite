@@ -3,17 +3,26 @@ from .imports import *
 
 
 class qarray(np.ndarray):
+    """
+    A copy of numpy.ndarray (URL) but initialized with complex values
+    """
     def __new__(cls, a):
         obj = np.array(a, dtype=np.complex128).view(cls)
         return obj
     
     def dagg(self):
+        """
+        Returns the complex hermitian of a matrix
+        """
         return self.T.conj()
     
-    def eig(self):
+    def eig(self, tol=0):
+        """
+        Returns the eigenvalues and eigenvectors descarting those elements smaller than a tolerance (default value = 0)
+        """
         vals,vects = np.linalg.eig(self)
-        vals *= abs(vals)>=1e-15
-        vects *= abs(vects)>=1e-15
+        vals *= abs(vals)>=tol
+        vects *= abs(vects)>=tol
         return vals,vects
     
     def tri_to_herm(self, mode="U"):
