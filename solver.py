@@ -238,7 +238,7 @@ class Solver:
     def cut(self):
         return self.__cut
     @cut.setter
-    def cut(self, *x):
+    def cut(self, x):
         self.__cut = x
         self.__HhopL[1*N:2*N,:N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[:N,1*N:2*N] = self.__HhopL[1*N:2*N,:N].dagg()
         self.__HhopL[2*N:3*N,:N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[:N,2*N:3*N] = self.__HhopL[2*N:3*N,:N].dagg()
