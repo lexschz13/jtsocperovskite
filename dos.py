@@ -3,9 +3,11 @@ from .qarray import *
 
 
 def dos(x, H, idxs, dump):
-    w,U = H.eig()
+    if type(x) is not np.ndarray:
+        x = np.array([x])
+    w,U = np.linalg.eigh(H)
+    w0 = w.min()
     G = qzeros(x.size)
     for i in idxs:
-        #[eigen,frequency], sum over eigenstates
-        G += np.sum(abs(U[i,:,None])**2/((x[None,:]-w[:,None]) + 1j*dump), axis=0)
+        G += np.sum(abs(U[:,i,None])**2/(x[None,:]-w[:,None].real + w0 + 1j*dump), axis=0)
     return -G.imag/np.pi

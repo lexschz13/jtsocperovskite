@@ -21,7 +21,7 @@ class Solver:
         #Energies diag
         self.__delta     = defaults(2, "delta", kwargs)
         #Jahn-Teler
-        self.__FE        = defaults(1.85, "FE", kwargs)
+        self.__FE        = defaults(1.25, "FE", kwargs)
         self.__GE        = defaults(0.02, "GE", kwargs)
         self.__FT        = defaults(0.15, "FT", kwargs)
         self.__dth       = defaults(0, "dth", kwargs)
@@ -267,7 +267,7 @@ class Solver:
     def __tan_sug(self):
         subH = qzeros((N,N))
         #T1g
-        subH[:9,:9] += self.__delta
+        subH[:9,:9] += self.__delta * qidentity(9)
         #Eg
         #0
         
@@ -279,16 +279,16 @@ class Solver:
         pauliz = qarray([[1,0],[0,-1]])
         paulix = qarray([[0,1],[1,0]])
         gellmann3 = qarray([[1,0,0],[0,-1,0],[0,0,0]])
-        gellmann8 = qarray([[1,0,0],[1,0,0],[0,0,-2]])/np.sqrt(3)
+        gellmann8 = qarray([[1,0,0],[0,1,0],[0,0,-2]])/np.sqrt(3)
         
         We = (self.__FE*np.cos(theta) + self.__GE*np.cos(2*theta))*pauliz + (self.__FE*np.sin(theta) - self.__GE*np.sin(2*theta))*paulix
-        Wt = -0.5*self.__FT*(np.sqrt(3)*gellmann8*np.cos(theta) + gellmann3*np.sin(theta)) - 0.5*(self.__FE + 2*self.__GE - self.FT)*qidentity(3)
+        Wt = -0.5*np.sqrt(3)*self.__FT*(gellmann8*np.cos(theta) + gellmann3*np.sin(theta)) - 0.5*(self.__FE + 2*self.__GE - self.FT)*qidentity(3)
         
         subH[9:,9:] = np.kron(We,qidentity(5))
         subH[:9,:9] = np.kron(Wt,qidentity(3))
         
         #Shifting all hamiltonian for ground state at E=0
-        subH += np.sqrt(self.__FE**2 + self.__GE**2 + 2*self.__FE*self.__GE*np.cos(3*theta))
+        subH += np.sqrt(self.__FE**2 + self.__GE**2 + 2*self.__FE*self.__GE*np.cos(3*theta)) * qidentity(N) #+ qidentity(N)
         
         return subH
     
@@ -308,12 +308,14 @@ class Solver:
         subH = qzeros((N,N))
         
         q = ["x","y","z"].index(hop_dir)
-        P = np.sum(moment_tensor(self.__ssd,self.__sdd,self.__pdd,self.__ddd)[:,q,:,:]*pol[None,:,None], axis=2)
+        P = np.sum(moment_tensor(self.__ssd,self.__sdd,self.__pdd,self.__ddd)[:,q,:,:]*pol[None,:,None], axis=1)
         
         for K in range(4):
             for L in range(4):
                 subH[9:,9:] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
                 subH[:9,:9] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
+                subH[9:,:9] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
+                subH[:9,9:] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
         
         return subH
     
