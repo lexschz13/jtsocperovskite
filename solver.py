@@ -262,6 +262,29 @@ class Solver:
         self.__dump = x
     
     ################################################################################################
+    #Hamiltonians getter
+    
+    @property
+    def Henergy(self):
+        return self.__Henergy
+    
+    @property
+    def HJT(self):
+        return self.__HJT
+    
+    @property
+    def HSOC(self):
+        return self.__HSOC
+    
+    @property
+    def HhopL(self):
+        return self.__HhopL
+    
+    @property
+    def HhopR(self):
+        return self.__HhopR
+    
+    ################################################################################################
     #Hamiltonian construction
     
     def __tan_sug(self):
