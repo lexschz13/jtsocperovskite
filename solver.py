@@ -274,15 +274,15 @@ class Solver:
     
     @property
     def HSOC(self):
-        return self.__HSOC
+        return self._xiSO*self.__HSOC
     
     @property
     def HhopL(self):
-        return self.__HhopL
+        return self.__xihop*self.__HhopL
     
     @property
     def HhopR(self):
-        return self.__HhopR
+        return self.__xihop*self.__HhopR
     
     ################################################################################################
     #Hamiltonian construction
