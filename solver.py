@@ -21,14 +21,15 @@ class Solver:
         #Energies diag
         self.__delta     = defaults(2, "delta", kwargs)
         #Jahn-Teler
-        self.__FE        = defaults(1.25, "FE", kwargs)
+        self.__FE        = defaults(0.75, "FE", kwargs)
         self.__GE        = defaults(0.02, "GE", kwargs)
         self.__FT        = defaults(0.15, "FT", kwargs)
         self.__dth       = defaults(0, "dth", kwargs)
         #Spin-orbit
         self.__xiSO      = defaults(0.02, "xiSO", kwargs)
         #Hopping
-        self.__xihop     = defaults(0.008, "xihop", kwargs)
+        self.__tpd       = defaults(0.03, "xihop", kwargs)
+        self.__CT        = defaults(4.2, "CT", kwargs)
         self.__ssd       = defaults(0.87, "ssd", kwargs)
         self.__sdd       = defaults(0.65, "sdd", kwargs)
         self.__pdd       = defaults(0.48, "pdd", kwargs)
@@ -36,7 +37,10 @@ class Solver:
         #Polarization
         self.__cut       = defaults([0,0,1], "cut", kwargs)
         #Dumping
-        self.__dump      = defaults(0.01, "dump", kwargs)
+        self.__dump      = defaults(0.02, "dump", kwargs)
+        #Propagation
+        self.__T         = defaults(260, "temperature", kwargs)
+        self.__spin_pol  = defaults([1,1,1,1,1], "spin_pol", kwargs)
         
         #Hamiltonian
         self.__Henergy = qzeros((Ns*N,Ns*N))
@@ -47,7 +51,7 @@ class Solver:
         
         #Construction
         for k in range(Ns):
-            self.__Henergy[k*N:(k+1)*N,k*N:(k+1)*N] = self.__tan_sug()
+            self.__Henergy[k*N:(k+1)*N,k*N:(k+1)*N] = self.__tan_sug(k)
             self.__HSOC[k*N:(k+1)*N,k*N:(k+1)*N] = self.__soc()
 
         self.__HJT[0*N:1*N,0*N:1*N] = self.__jahn_teler(0, False)
@@ -82,7 +86,7 @@ class Solver:
     def delta(self, x):
         self.__delta = x
         for k in range(Ns):
-            self.__Henergy[k*N:(k+1)*N,k*N:(k+1)*N] = self.__tan_sug()
+            self.__Henergy[k*N:(k+1)*N,k*N:(k+1)*N] = self.__tan_sug(k)
     
     @property
     def FE(self):
@@ -148,11 +152,20 @@ class Solver:
         self.__xiSO = x
     
     @property
-    def xihop(self):
-        return self.__xihop
-    @xihop.setter
-    def xihop(self, x):
-        self.__xihop = x
+    def tpd(self):
+        return self.__tpd
+    @tpd.setter
+    def tpd(self, x):
+        self.__tpd = x
+    
+    @property
+    def CT(self):
+        return self.__CT
+    @CT.setter
+    def CT(self, x):
+        self.__CT = x
+        for k in range(1,Ns):
+            self.__tan_sug(k)
     
     @property
     def ssd(self):
@@ -261,38 +274,54 @@ class Solver:
     def dump(self, x):
         self.__dump = x
     
+    @property
+    def T(self):
+        return self.__T
+    @T.setter
+    def T(self, x):
+        self.__T = x
+    
+    @property
+    def spin_pol(self):
+        return self.__spin_pol
+    @spin_pol.setter
+    def spin_pol(self, x):
+        self.__spin_pol = x
+    
     ################################################################################################
     #Hamiltonians getter
-    
+   
     @property
     def Henergy(self):
         return self.__Henergy
-    
+   
     @property
     def HJT(self):
         return self.__HJT
-    
+   
     @property
     def HSOC(self):
-        return self._xiSO*self.__HSOC
-    
+        return self.__xiSO*self.__HSOC
+   
     @property
     def HhopL(self):
-        return self.__xihop*self.__HhopL
-    
+        return self.__tpd**2/self.__CT*self.__HhopL
+   
     @property
     def HhopR(self):
-        return self.__xihop*self.__HhopR
+        return self.__tpd**2/self.__CT*self.__HhopR
     
     ################################################################################################
     #Hamiltonian construction
     
-    def __tan_sug(self):
+    def __tan_sug(self, n):
         subH = qzeros((N,N))
         #T1g
         subH[:9,:9] += self.__delta * qidentity(9)
         #Eg
         #0
+        #if n!= 0:
+        #    subH += self.__CT*qidentity(N)
         
         return subH
     
@@ -345,8 +374,8 @@ class Solver:
     ###############################################################################
     #Solving
     def solve(self, x):
-        self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__xihop*self.__HhopL
-        self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__xihop*self.__HhopR
-        rhoL = dos(x,self.HL,range(14,19),self.__dump)
-        rhoR = dos(x,self.HR,range(14,19),self.__dump)
+        self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopL
+        self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopR
+        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol)
+        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol)
         return (rhoL+rhoR)/2, (rhoL-rhoR)/2
