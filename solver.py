@@ -41,6 +41,7 @@ class Solver:
         #Propagation
         self.__T         = defaults(260, "temperature", kwargs)
         self.__spin_pol  = defaults([1,1,1,1,1], "spin_pol", kwargs)
+        self.__spin_dir  = defaults([0,0,1], "spin_dir", kwargs)
         
         #Hamiltonian
         self.__Henergy = qzeros((Ns*N,Ns*N))
@@ -48,6 +49,9 @@ class Solver:
         self.__HSOC = qzeros((Ns*N,Ns*N))
         self.__HhopL = qzeros((Ns*N,Ns*N))
         self.__HhopR = qzeros((Ns*N,Ns*N))
+        
+        #Ensemble
+        #self.__ensemble = self.__density_matrix(self.__spin_pol, self.__spin_dir)
         
         #Construction
         for k in range(Ns):
@@ -288,8 +292,19 @@ class Solver:
     def spin_pol(self, x):
         self.__spin_pol = x
     
+    @property
+    def spin_dir(self):
+        return self.__spin_dir
+    @spin_dir.setter
+    def spin_dir(self, x):
+        self.__spin_dir = x
+    
     ################################################################################################
     #Hamiltonians getter
+    
+    @property
+    def ensemble(self):
+        return self.__ensemble
    
     @property
     def Henergy(self):
@@ -313,6 +328,17 @@ class Solver:
     
     ################################################################################################
     #Hamiltonian construction
+    
+    def __spin_ensemble_rotation_matrix(self, sdir):
+        a,b,c = sdir[:3]
+        NN = np.sqrt(a**2+b**2+c**2)
+        S = (a*S2x + b*S2y + c*S2z)/NN
+        M,U = np.linalg.eigh(S)
+        #M = np.flip(M)
+        U = np.flip(U, axis=1)
+        UU = qidentity(Ns*N)
+        UU[14:19,14:19] = U
+        return UU
     
     def __tan_sug(self, n):
         subH = qzeros((N,N))
@@ -376,6 +402,6 @@ class Solver:
     def solve(self, x):
         self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopL
         self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopR
-        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol)
-        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol)
+        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol,self.__spin_ensemble_rotation_matrix(self.__spin_dir))
+        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol,self.__spin_ensemble_rotation_matrix(self.__spin_dir))
         return (rhoL+rhoR)/2, (rhoL-rhoR)/2

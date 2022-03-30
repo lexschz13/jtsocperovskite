@@ -29,7 +29,8 @@ def moment_tensor(A,B,C,D):
     Qv = R @ Pv @ np.linalg.inv(R)
     Qh = R @ Ph @ np.linalg.inv(R)
     Qt = R @ Pt @ np.linalg.inv(R)
-    Ty = qarray([Qh,Qt,Pz,-0.5*(k*Qu+Qv),-0.5*(Qu-k*Qv)])
+    #Ty = qarray([Qt,Pz,Qh,-0.5*(k*Qu+Qv),-0.5*(Qu-k*Qv)])
+    Ty = qarray([Qt,Pz,Qh,0.5*(k*Qu-Qv),-0.5*(Qu+k*Qv)])
     
     #For alpha=z
     R = qarray([[0,1,0],[0,0,1],[1,0,0]])
@@ -37,7 +38,8 @@ def moment_tensor(A,B,C,D):
     Qv = R @ Pv @ np.linalg.inv(R)
     Qh = R @ Ph @ np.linalg.inv(R)
     Qt = R @ Pt @ np.linalg.inv(R)
-    Tz = qarray([Qt,Pz,Qh,0.5*(k*Qu-Qv),-0.5*(Qu+k*Qv)])
+    #Tz = qarray([Qh,Qt,Pz,0.5*(k*Qu-Qv),-0.5*(Qu+k*Qv)])
+    Tz = qarray([Qh,Qt,Pz,-0.5*(k*Qu+Qv),-0.5*(Qu-k*Qv)])
     
     #From (alpha,chi,q,w) to (chi,q,alpha,w)
     return qarray([Tx,Ty,Tz]).transpose(1,2,0,3)
