@@ -21,15 +21,8 @@ for k in range(5): S2z[k,k] = 2-k
 def transf2(*n):
     a,b,c = n
     S2 = (a*S2x + b*S2y + c*S2z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(S2)
-    vals = np.round(vals)
-    U = qzeros((3,3))
-    U[:,0] = vects[:,np.where(vals==2)]
-    U[:,1] = vects[:,np.where(vals==1)]
-    U[:,2] = vects[:,np.where(vals==0)]
-    U[:,3] = vects[:,np.where(vals==-1)]
-    U[:,4] = vects[:,np.where(vals==-2)]
-    return U
+    vals,vects = np.linalg.eig(-S2)
+    return vects.dagg()
 
 
 
@@ -50,13 +43,8 @@ for k in range(3): S1z[k,k] = 1-k
 def transf1(*n):
     a,b,c = n
     S1 = (a*S1x + b*S1y + c*S1z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(S1)
-    vals = np.round(vals)
-    U = qzeros((3,3))
-    U[:,0] = vects[:,np.where(vals==1)]
-    U[:,1] = vects[:,np.where(vals==0)]
-    U[:,2] = vects[:,np.where(vals==-1)]
-    return U
+    vals,vects = np.linalg.eigh(-S1)
+    return vects.dagg()
 
 
 
@@ -76,7 +64,7 @@ for k in range(4): S32z[k,k] = 1.5-k
 def transf32(*n):
     a,b,c = n
     S32 = (a*S32x + b*S32y + c*S32z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(-S32)
+    vals,vects = np.linalg.eigh(-S32)
     return vects.dagg()
 
 
@@ -93,12 +81,8 @@ for k in range(2): S12z[k,k] = 0.5-k
 def transf12(*n):
     a,b,c = n
     S12 = (a*S12x + b*S12y + c*S12z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(S12)
-    vals = np.round(2*vals)/2
-    U = qzeros((2,2))
-    U[:,0] = vects[:,np.where(vals==0.5)]
-    U[:,1] = vects[:,np.where(vals==-0.5)]
-    return U
+    vals,vects = np.linalg.eigh(-S12)
+    return vects.dagg()
 
 
 
