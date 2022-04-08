@@ -76,14 +76,8 @@ for k in range(4): S32z[k,k] = 1.5-k
 def transf32(*n):
     a,b,c = n
     S32 = (a*S32x + b*S32y + c*S32z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(S32)
-    vals = np.round(2*vals)/2
-    U = qzeros((4,4))
-    U[:,0] = vects[:,np.where(vals==1.5)]
-    U[:,1] = vects[:,np.where(vals==0.5)]
-    U[:,2] = vects[:,np.where(vals==-0.5)]
-    U[:,3] = vects[:,np.where(vals==-1.5)]
-    return U
+    vals,vects = np.linalg.eig(-S32)
+    return vects.dagg()
 
 
 
