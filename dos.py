@@ -8,13 +8,11 @@ kB = 8.617333262e-5
 
 
 
-def dos(x, H, idxs, dump, T, ensemble, srot):
+def dos(x, H, idxs, dump, T, ensemble):
     if type(x) is not np.ndarray:
         x = np.array([x])
     
-    Hrot = srot @ H @ srot.dagg()
-    
-    w,U = np.linalg.eigh(Hrot)
+    w,U = np.linalg.eigh(H)
     g_idxs = np.where((w-w[0]) <= kB*T)[0]
     e_idxs = np.where((w-w[0]) > kB*T)[0]
     

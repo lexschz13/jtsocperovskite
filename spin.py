@@ -21,7 +21,7 @@ for k in range(5): S2z[k,k] = 2-k
 def transf2(*n):
     a,b,c = n
     S2 = (a*S2x + b*S2y + c*S2z)/np.sqrt(a**2+b**2+c**2)
-    vals,vects = np.linalg.eig(-S2)
+    vals,vects = np.linalg.eigh(-S2)
     return vects.dagg()
 
 
@@ -195,3 +195,29 @@ CG_T1T1 = qarray([CG_T1T1_x,CG_T1T1_y,CG_T1T1_z]).transpose(1,0,2) #g,w,g'
 
 def tCG(U,CG,V):
     return U.dagg() @ CG @ V
+
+
+
+def spin_rotation(j,*n):
+    from scipy.special import factorial
+    def small_wigner(j,beta):
+        mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
+        d = np.zeros(mcol.shape)
+        s = np.maximum(0*mcol,mcol-mrow)
+        sfinal = np.minimum(j+mcol,j-mrow)
+        while (s<=sfinal).any():
+            wh = np.where(s<=sfinal)
+            krow = mrow[wh]
+            kcol = mcol[wh]
+            r = s[wh]
+            d[wh] += ((-1)**(krow-kcol+r) * (np.cos(beta/2))**(2*j+kcol-krow-2*r) * (np.sin(beta/2))**(krow-kcol+2*r)) / (factorial(j+kcol-r) * factorial(r) * factorial(krow-kcol+r) * factorial(j-krow-r))
+            s += 1
+        return mrow, np.sqrt(factorial(j+mrow) * factorial(j-mrow) * factorial(j+mcol) * factorial(j-mcol)) * d, mcol
+    
+    a,b,c = n
+    N = np.sqrt(a**2+b**2+c**2)
+    theta = np.arccos(c/N)
+    phi = ((np.pi/2 + np.pi*(b<0))*(b!=0) if a==0 else np.arctan(b/a)) + np.pi*(a<0)
+    mrow, d, mcol = small_wigner(j, theta)
+    D = np.exp(-1j*phi*mrow) * d
+    return D #D.real*(D.real>=1e-15) + 1j*D.imag*(D.imag>=1e-15)

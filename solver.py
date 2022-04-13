@@ -28,7 +28,7 @@ class Solver:
         #Spin-orbit
         self.__xiSO      = defaults(0.02, "xiSO", kwargs)
         #Hopping
-        self.__tpd       = defaults(0.03, "xihop", kwargs)
+        self.__tpd       = defaults(0.03, "tpd", kwargs)
         self.__CT        = defaults(4.2, "CT", kwargs)
         self.__ssd       = defaults(0.87, "ssd", kwargs)
         self.__sdd       = defaults(0.65, "sdd", kwargs)
@@ -80,18 +80,18 @@ class Solver:
         self.__HhopL[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[2*N:3*N,6*N:7*N] = self.__HhopL[6*N:7*N,2*N:3*N].dagg()
         self.__HhopL[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[3*N:4*N,7*N:8*N] = self.__HhopL[7*N:8*N,3*N:4*N].dagg()
         
-        self.__HhopR[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopR[0*N:1*N,1*N:2*N] = self.__HhopR[1*N:2*N,0*N:1*N].dagg()
-        self.__HhopR[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopR[1*N:2*N,2*N:3*N] = self.__HhopR[2*N:3*N,1*N:2*N].dagg()
-        self.__HhopR[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopR[2*N:3*N,3*N:4*N] = self.__HhopR[3*N:4*N,2*N:3*N].dagg()
-        self.__HhopR[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopR[3*N:4*N,0*N:1*N] = self.__HhopR[0*N:1*N,3*N:4*N].dagg()
-        self.__HhopR[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopR[4*N:5*N,5*N:6*N] = self.__HhopR[5*N:6*N,4*N:5*N].dagg()
-        self.__HhopR[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopR[5*N:6*N,6*N:7*N] = self.__HhopR[6*N:7*N,5*N:6*N].dagg()
-        self.__HhopR[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopR[6*N:7*N,7*N:8*N] = self.__HhopR[7*N:8*N,6*N:7*N].dagg()
-        self.__HhopR[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopR[7*N:8*N,4*N:5*N] = self.__HhopR[4*N:5*N,7*N:8*N].dagg()
-        self.__HhopR[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopR[0*N:1*N,4*N:5*N] = self.__HhopR[4*N:5*N,0*N:1*N].dagg()
-        self.__HhopR[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopR[1*N:2*N,5*N:6*N] = self.__HhopR[5*N:6*N,1*N:2*N].dagg()
-        self.__HhopR[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopR[2*N:3*N,6*N:7*N] = self.__HhopR[6*N:7*N,2*N:3*N].dagg()
-        self.__HhopR[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopR[3*N:4*N,7*N:8*N] = self.__HhopR[7*N:8*N,3*N:4*N].dagg()
+        self.__HhopR[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,1*N:2*N] = self.__HhopR[1*N:2*N,0*N:1*N].dagg()
+        self.__HhopR[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,2*N:3*N] = self.__HhopR[2*N:3*N,1*N:2*N].dagg()
+        self.__HhopR[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,3*N:4*N] = self.__HhopR[3*N:4*N,2*N:3*N].dagg()
+        self.__HhopR[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,0*N:1*N] = self.__HhopR[0*N:1*N,3*N:4*N].dagg()
+        self.__HhopR[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[4*N:5*N,5*N:6*N] = self.__HhopR[5*N:6*N,4*N:5*N].dagg()
+        self.__HhopR[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[5*N:6*N,6*N:7*N] = self.__HhopR[6*N:7*N,5*N:6*N].dagg()
+        self.__HhopR[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[6*N:7*N,7*N:8*N] = self.__HhopR[7*N:8*N,6*N:7*N].dagg()
+        self.__HhopR[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[7*N:8*N,4*N:5*N] = self.__HhopR[4*N:5*N,7*N:8*N].dagg()
+        self.__HhopR[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,4*N:5*N] = self.__HhopR[4*N:5*N,0*N:1*N].dagg()
+        self.__HhopR[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,5*N:6*N] = self.__HhopR[5*N:6*N,1*N:2*N].dagg()
+        self.__HhopR[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,6*N:7*N] = self.__HhopR[6*N:7*N,2*N:3*N].dagg()
+        self.__HhopR[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,7*N:8*N] = self.__HhopR[7*N:8*N,3*N:4*N].dagg()
     
     ################################################################################################
     #Definition of properties
@@ -368,32 +368,6 @@ class Solver:
     @spin_pol.setter
     def spin_pol(self, x):
         self.__spin_pol = x
-        if all(np.array(self.__spin_pol[1:5])==0):
-            self.__HhopL[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[0*N:1*N,1*N:2*N] = self.__HhopL[1*N:2*N,0*N:1*N].dagg()
-            self.__HhopL[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[1*N:2*N,2*N:3*N] = self.__HhopL[2*N:3*N,1*N:2*N].dagg()
-            self.__HhopL[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[2*N:3*N,3*N:4*N] = self.__HhopL[3*N:4*N,2*N:3*N].dagg()
-            self.__HhopL[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[3*N:4*N,0*N:1*N] = self.__HhopL[0*N:1*N,3*N:4*N].dagg()
-            self.__HhopL[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[4*N:5*N,5*N:6*N] = self.__HhopL[5*N:6*N,4*N:5*N].dagg()
-            self.__HhopL[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[5*N:6*N,6*N:7*N] = self.__HhopL[6*N:7*N,5*N:6*N].dagg()
-            self.__HhopL[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[6*N:7*N,7*N:8*N] = self.__HhopL[7*N:8*N,6*N:7*N].dagg()
-            self.__HhopL[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[7*N:8*N,4*N:5*N] = self.__HhopL[4*N:5*N,7*N:8*N].dagg()
-            self.__HhopL[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[0*N:1*N,4*N:5*N] = self.__HhopL[4*N:5*N,0*N:1*N].dagg()
-            self.__HhopL[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[1*N:2*N,5*N:6*N] = self.__HhopL[5*N:6*N,1*N:2*N].dagg()
-            self.__HhopL[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[2*N:3*N,6*N:7*N] = self.__HhopL[6*N:7*N,2*N:3*N].dagg()
-            self.__HhopL[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[3*N:4*N,7*N:8*N] = self.__HhopL[7*N:8*N,3*N:4*N].dagg()
-            
-            self.__HhopR[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,1*N:2*N] = self.__HhopR[1*N:2*N,0*N:1*N].dagg()
-            self.__HhopR[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,2*N:3*N] = self.__HhopR[2*N:3*N,1*N:2*N].dagg()
-            self.__HhopR[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,3*N:4*N] = self.__HhopR[3*N:4*N,2*N:3*N].dagg()
-            self.__HhopR[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,0*N:1*N] = self.__HhopR[0*N:1*N,3*N:4*N].dagg()
-            self.__HhopR[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[4*N:5*N,5*N:6*N] = self.__HhopR[5*N:6*N,4*N:5*N].dagg()
-            self.__HhopR[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[5*N:6*N,6*N:7*N] = self.__HhopR[6*N:7*N,5*N:6*N].dagg()
-            self.__HhopR[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[6*N:7*N,7*N:8*N] = self.__HhopR[7*N:8*N,6*N:7*N].dagg()
-            self.__HhopR[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[7*N:8*N,4*N:5*N] = self.__HhopR[4*N:5*N,7*N:8*N].dagg()
-            self.__HhopR[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,4*N:5*N] = self.__HhopR[4*N:5*N,0*N:1*N].dagg()
-            self.__HhopR[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,5*N:6*N] = self.__HhopR[5*N:6*N,1*N:2*N].dagg()
-            self.__HhopR[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,6*N:7*N] = self.__HhopR[6*N:7*N,2*N:3*N].dagg()
-            self.__HhopR[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,7*N:8*N] = self.__HhopR[7*N:8*N,3*N:4*N].dagg()
     
     @property
     def spin_dir(self):
@@ -401,34 +375,9 @@ class Solver:
     @spin_dir.setter
     def spin_dir(self, x):
         self.__spin_dir = x
-        if all(np.array(self.__spin_pol[1:5])==0):
-            self.__HhopL[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[0*N:1*N,1*N:2*N] = self.__HhopL[1*N:2*N,0*N:1*N].dagg()
-            self.__HhopL[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[1*N:2*N,2*N:3*N] = self.__HhopL[2*N:3*N,1*N:2*N].dagg()
-            self.__HhopL[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[2*N:3*N,3*N:4*N] = self.__HhopL[3*N:4*N,2*N:3*N].dagg()
-            self.__HhopL[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[3*N:4*N,0*N:1*N] = self.__HhopL[0*N:1*N,3*N:4*N].dagg()
-            self.__HhopL[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[4*N:5*N,5*N:6*N] = self.__HhopL[5*N:6*N,4*N:5*N].dagg()
-            self.__HhopL[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[5*N:6*N,6*N:7*N] = self.__HhopL[6*N:7*N,5*N:6*N].dagg()
-            self.__HhopL[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[0]); self.__HhopL[6*N:7*N,7*N:8*N] = self.__HhopL[7*N:8*N,6*N:7*N].dagg()
-            self.__HhopL[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[0]); self.__HhopL[7*N:8*N,4*N:5*N] = self.__HhopL[4*N:5*N,7*N:8*N].dagg()
-            self.__HhopL[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[0*N:1*N,4*N:5*N] = self.__HhopL[4*N:5*N,0*N:1*N].dagg()
-            self.__HhopL[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[1*N:2*N,5*N:6*N] = self.__HhopL[5*N:6*N,1*N:2*N].dagg()
-            self.__HhopL[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[2*N:3*N,6*N:7*N] = self.__HhopL[6*N:7*N,2*N:3*N].dagg()
-            self.__HhopL[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[0]); self.__HhopL[3*N:4*N,7*N:8*N] = self.__HhopL[7*N:8*N,3*N:4*N].dagg()
-            
-            self.__HhopR[1*N:2*N,0*N:1*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,1*N:2*N] = self.__HhopR[1*N:2*N,0*N:1*N].dagg()
-            self.__HhopR[2*N:3*N,1*N:2*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,2*N:3*N] = self.__HhopR[2*N:3*N,1*N:2*N].dagg()
-            self.__HhopR[3*N:4*N,2*N:3*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,3*N:4*N] = self.__HhopR[3*N:4*N,2*N:3*N].dagg()
-            self.__HhopR[0*N:1*N,3*N:4*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,0*N:1*N] = self.__HhopR[0*N:1*N,3*N:4*N].dagg()
-            self.__HhopR[5*N:6*N,4*N:5*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[4*N:5*N,5*N:6*N] = self.__HhopR[5*N:6*N,4*N:5*N].dagg()
-            self.__HhopR[6*N:7*N,5*N:6*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[5*N:6*N,6*N:7*N] = self.__HhopR[6*N:7*N,5*N:6*N].dagg()
-            self.__HhopR[7*N:8*N,6*N:7*N] = self.__hop("x",rot_eps(*self.__cut)[1]); self.__HhopR[6*N:7*N,7*N:8*N] = self.__HhopR[7*N:8*N,6*N:7*N].dagg()
-            self.__HhopR[4*N:5*N,7*N:8*N] = self.__hop("y",rot_eps(*self.__cut)[1]); self.__HhopR[7*N:8*N,4*N:5*N] = self.__HhopR[4*N:5*N,7*N:8*N].dagg()
-            self.__HhopR[4*N:5*N,0*N:1*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[0*N:1*N,4*N:5*N] = self.__HhopR[4*N:5*N,0*N:1*N].dagg()
-            self.__HhopR[5*N:6*N,1*N:2*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[1*N:2*N,5*N:6*N] = self.__HhopR[5*N:6*N,1*N:2*N].dagg()
-            self.__HhopR[6*N:7*N,2*N:3*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[2*N:3*N,6*N:7*N] = self.__HhopR[6*N:7*N,2*N:3*N].dagg()
-            self.__HhopR[7*N:8*N,3*N:4*N] = self.__hop("z",rot_eps(*self.__cut)[1]); self.__HhopR[3*N:4*N,7*N:8*N] = self.__HhopR[7*N:8*N,3*N:4*N].dagg()
+        for k in range(Ns):
+            self.__HSOC[k*N:(k+1)*N,k*N:(k+1)*N] = self.__soc()
         
-    
     @property
     def Nsites(self):
         return Ns
@@ -460,23 +409,8 @@ class Solver:
     def HhopR(self):
         return self.__tpd**2/self.__CT*self.__HhopR
     
-    @property
-    def spin_rotation(self):
-        return self.__spin_ensemble_rotation_matrix(self.__spin_dir)
-    
     ################################################################################################
     #Hamiltonian construction
-    
-    def __spin_ensemble_rotation_matrix(self, sdir):
-        U2 = transf2(*sdir)
-        U1 = transf1(*sdir)
-        
-        UU = qidentity(Ns*N)
-        #for k1 in range(Ns): UU[N*k1:N*k1+9,N*k1:N*k1+9] = np.kron(qidentity(3), U1.dagg())
-        #for k2 in range(Ns): UU[N*k2+9:N*k2+19,N*k2+9:N*k2+19] = np.kron(qidentity(2), U2.dagg())
-        #U2[np.where(abs(U2)<1e-15)] = 0
-        UU[14:19,14:19] = U2
-        return UU
     
     def __tan_sug(self, n):
         subH = qzeros((N,N))
@@ -509,15 +443,6 @@ class Solver:
         return subH
     
     def __soc(self):
-        subH = qzeros((N,N))
-        
-        #T1g-T1g
-        #subH[:9,:9] = np.sqrt(1/6)*VT1g[0,0]*np.sum(np.kron(CG_T1T1,CGcartesian(CG_11_p,CG_11_z,CG_11_m)), axis=1)
-        
-        #Eg-T1g
-        #subH[9:,:9] = np.sqrt(0.1)*VT1g[1,0]*np.sum(np.kron(CG_ET1,CGcartesian(CG_21_p,CG_21_z,CG_21_m)), axis=1)
-        #subH[:9,9:] = subH[9:,:9].dagg()
-        
         subH = qarray([[np.sqrt(6),0,0, 0,0,0,  0,0,0,  -np.sqrt(6),0,0,0,0,  0,0,np.sqrt(6),0,0],
                        [0,0,0, 0,0,0, -1j*np.sqrt(6),0,0,  0,-np.sqrt(3),0,0,0,  0,0,0,3*np.sqrt(2),0],
                        [0,0,-np.sqrt(6), 0,0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  0,0,0,0,6],
@@ -538,11 +463,19 @@ class Solver:
                        [0,3*np.sqrt(2),0, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
                        [0,0,6, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0]])/(2*np.sqrt(3))
         
-        U = qarray([[-np.sqrt(0.5), np.sqrt(0.5),0],[-1j*np.sqrt(0.5),-1j*np.sqrt(0.5),0],[0,0,1]])
-        fullU = qidentity(N)
-        fullU[:9,:9] = np.kron(U,qidentity(3))
+        Ul = qarray([[-np.sqrt(0.5), np.sqrt(0.5),0],[-1j*np.sqrt(0.5),-1j*np.sqrt(0.5),0],[0,0,1]])
+        fullUl = qidentity(N)
+        fullUl[:9,:9] = np.kron(Ul,qidentity(3))
         
-        return fullU @ subH @ fullU.dagg()
+        U1 = spin_rotation(1,*self.__spin_dir)
+        U2 = spin_rotation(2,*self.__spin_dir)
+        fullUs = qidentity(N)
+        fullUs[:9,:9] = np.kron(qidentity(3),U1)
+        fullUs[9:,9:] = np.kron(qidentity(2),U2)
+        
+        soc_transf = fullUs @ fullUl
+        
+        return soc_transf @ subH @ soc_transf.dagg()
     
     def __hop(self, hop_dir, pol):
         subH = qzeros((N,N))
@@ -550,23 +483,12 @@ class Solver:
         q = ["x","y","z"].index(hop_dir)
         P = np.sum(moment_tensor(self.__ssd,self.__sdd,self.__pdd,self.__ddd)[:,q,:,:]*pol[None,:,None], axis=1)
         
-        if all(np.array(self.__spin_pol[1:5])==0):
-            U32 = transf32(*self.__spin_dir)
-            CG_2_pt = CG_2_p @ U32.dagg()
-            CG_2_mt = CG_2_m @ U32.dagg()
-            CG_1_pt = CG_1_p @ U32.dagg()
-            CG_1_mt = CG_1_m @ U32.dagg()
-            subH[9:,9:] += np.kron(P[3:],CG_2_pt[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_pt[:,0,None].dagg()) + np.kron(P[3:],CG_2_mt[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_mt[:,0,None].dagg())
-            subH[:9,:9] += np.kron(P[:3],CG_1_pt[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_pt[:,0,None].dagg()) + np.kron(P[:3],CG_1_mt[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_mt[:,0,None].dagg())
-            subH[9:,:9] += np.kron(P[3:],CG_2_pt[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_pt[:,0,None].dagg()) + np.kron(P[3:],CG_2_mt[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_mt[:,0,None].dagg())
-            subH[:9,9:] += np.kron(P[:3],CG_1_pt[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_pt[:,0,None].dagg()) + np.kron(P[:3],CG_1_mt[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_mt[:,0,None].dagg())
-        else:
-            for K in range(4):
-                for L in range(4):
-                    subH[9:,9:] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
-                    subH[:9,:9] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
-                    subH[9:,:9] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
-                    subH[:9,9:] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
+        for K in range(4):
+            for L in range(4):
+                subH[9:,9:] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
+                subH[:9,:9] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
+                subH[9:,:9] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
+                subH[:9,9:] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
         
         return subH
     
@@ -595,8 +517,9 @@ class Solver:
     def solve(self, x):
         self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopL
         self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopR
-        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol,self.__spin_ensemble_rotation_matrix(self.__spin_dir))
-        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol,self.__spin_ensemble_rotation_matrix(self.__spin_dir))
+        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol)
+        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol)
+        
         return (rhoL+rhoR)/2, (rhoL-rhoR)/2
     
     def bands(self, resol=12):

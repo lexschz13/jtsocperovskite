@@ -49,3 +49,9 @@ def qbasis(k):
 
 def qmat_el(v1, v2, M):
     return (v1.dagg() @ M @ v2)[0,0]
+
+
+def func_op(func, A):
+    N = A.shape[0]
+    a,U = np.linalg.eig(A)
+    return U @ (func(a)*qidentity(N)) @ U.dagg()
