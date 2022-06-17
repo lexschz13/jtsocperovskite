@@ -443,29 +443,45 @@ class Solver:
         return subH
     
     def __soc(self):
-        subH = qarray([[np.sqrt(6),0,0, 0,0,0,  0,0,0,  -np.sqrt(6),0,0,0,0,  0,0,np.sqrt(6),0,0],
-                       [0,0,0, 0,0,0, -1j*np.sqrt(6),0,0,  0,-np.sqrt(3),0,0,0,  0,0,0,3*np.sqrt(2),0],
-                       [0,0,-np.sqrt(6), 0,0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  0,0,0,0,6],
-                       [0,0,0, -np.sqrt(6),0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  6,0,0,0,0],
-                       [0,0,0, 0,0,0,  0,0,-1j*np.sqrt(6),  0,0,0,-np.sqrt(3),0,  0,3*np.sqrt(2),0,0,0],
-                       [0,0,0, 0,0,np.sqrt(6), 0,0,0, 0,0,0,0,-np.sqrt(6),  0,0,np.sqrt(6),0,0],
-                       [0,1j*np.sqrt(6),0, 0,0,0,  0,0,0,  0,1j*2*np.sqrt(3),0,0,0, 0,0,0,0,0],
-                       [0,0,1j*np.sqrt(6), 1j*np.sqrt(6),0,0,  0,0,0,  0,0,1j*4,0,0, 0,0,0,0,0],
-                       [0,0,0, 0,1j*np.sqrt(6),0,  0,0,0,  0,0,0,1j*2*np.sqrt(3),0, 0,0,0,0,0],
-                       [-np.sqrt(6),0,0, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,-np.sqrt(3),0, 0,0,0,  -1j*2*np.sqrt(3),0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,-1, -1,0,0,  0,-1j*4,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,0, 0,-np.sqrt(3),0, 0,0,-1j*2*np.sqrt(3),  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,0, 0,0,-np.sqrt(6),  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,0, 6,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,0, 0,3*np.sqrt(2),0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [np.sqrt(6),0,0, 0,0,np.sqrt(6),  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,3*np.sqrt(2),0, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
-                       [0,0,6, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0]])/(2*np.sqrt(3))
+        # subH = qarray([[np.sqrt(6),0,0, 0,0,0,  0,0,0,  -np.sqrt(6),0,0,0,0,  0,0,np.sqrt(6),0,0],
+        #                 [0,0,0, 0,0,0, -1j*np.sqrt(6),0,0,  0,-np.sqrt(3),0,0,0,  0,0,0,3*np.sqrt(2),0],
+        #                 [0,0,-np.sqrt(6), 0,0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  0,0,0,0,6],
+        #                 [0,0,0, -np.sqrt(6),0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  6,0,0,0,0],
+        #                 [0,0,0, 0,0,0,  0,0,-1j*np.sqrt(6),  0,0,0,-np.sqrt(3),0,  0,3*np.sqrt(2),0,0,0],
+        #                 [0,0,0, 0,0,np.sqrt(6), 0,0,0, 0,0,0,0,-np.sqrt(6),  0,0,np.sqrt(6),0,0],
+        #                 [0,1j*np.sqrt(6),0, 0,0,0,  0,0,0,  0,1j*2*np.sqrt(3),0,0,0, 0,0,0,0,0],
+        #                 [0,0,1j*np.sqrt(6), 1j*np.sqrt(6),0,0,  0,0,0,  0,0,1j*4,0,0, 0,0,0,0,0],
+        #                 [0,0,0, 0,1j*np.sqrt(6),0,  0,0,0,  0,0,0,1j*2*np.sqrt(3),0, 0,0,0,0,0],
+        #                 [-np.sqrt(6),0,0, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,-np.sqrt(3),0, 0,0,0,  -1j*2*np.sqrt(3),0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,-1, -1,0,0,  0,-1j*4,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,0, 0,-np.sqrt(3),0, 0,0,-1j*2*np.sqrt(3),  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,0, 0,0,-np.sqrt(6),  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,0, 6,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,0, 0,3*np.sqrt(2),0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [np.sqrt(6),0,0, 0,0,np.sqrt(6),  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,3*np.sqrt(2),0, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0],
+        #                 [0,0,6, 0,0,0,  0,0,0,  0,0,0,0,0, 0,0,0,0,0]])/(2*np.sqrt(3))
         
-        Ul = qarray([[-np.sqrt(0.5), np.sqrt(0.5),0],[-1j*np.sqrt(0.5),-1j*np.sqrt(0.5),0],[0,0,1]])
-        fullUl = qidentity(N)
-        fullUl[:9,:9] = np.kron(Ul,qidentity(3))
+        # Ul = qarray([[-np.sqrt(0.5), np.sqrt(0.5),0],[-1j*np.sqrt(0.5),-1j*np.sqrt(0.5),0],[0,0,1]]) @ qarray([[-1j,0,0],[0,1j,0],[0,0,1]])
+        # fullUl = qidentity(N)
+        # fullUl[:9,:9] = np.kron(Ul,qidentity(3))
+        
+        subH = qzeros((N,N))
+        # m1col,m1row = np.meshgrid(np.arange(1,-1-1,-1),np.arange(1,-1-1,-1))
+        # m2col,m2row = np.meshgrid(np.arange(2,-2-1,-1),np.arange(2,-2-1,-1))
+        
+        subH[0:3,3:6] = 0.5/1j*S1z; subH[3:6,0:3] = subH[0:3,3:6].dagg()
+        subH[6:9,0:3] = 0.5*1j*S1y; subH[0:3,6:9] = subH[6:9,0:3].dagg()
+        subH[6:9,3:6] = 0.5/1j*S1x; subH[3:6,6:9] = subH[6:9,3:6].dagg()
+        
+        m2col,m1row = np.meshgrid(np.arange(2,-2-1,-1),np.arange(1,-1-1,-1))
+        subH[6:9,9:14] = -1j*np.sqrt((4-abs(m2col))/3)*(m2col==m1row); subH[9:14,6:9] = subH[6:9,9:14].dagg()
+        subH[0:3,9:14] = 1j/4*np.sqrt((m2col**2+3*abs(m2col)+2)/6)*(1*(m1row==(1+m2col)) - 1*(m1row==(m2col-1))); subH[9:14,0:3] = subH[0:3,9:14].dagg()
+        subH[3:6,9:14] = 1/4*np.sqrt((m2col**2+3*abs(m2col)+2)/6)*(1*(m1row==(1+m2col)) + 1*(m1row==(m2col-1))); subH[9:14,3:6] = subH[3:6,9:14].dagg()
+        
+        subH[0:3,14:19] = 1j/4*np.sqrt((m2col**2+3*abs(m2col)+2)/2)*(1*(m1row==(1+m2col)) - 1*(m1row==(m2col-1))); subH[14:19,0:3] = subH[0:3,14:19].dagg()
+        subH[3:6,14:19] = -1/4*np.sqrt((m2col**2+3*abs(m2col)+2)/2)*(1*(m1row==(1+m2col)) + 1*(m1row==(m2col-1))); subH[14:19,3:6] = subH[3:6,14:19].dagg()
         
         U1 = spin_rotation(1,*self.__spin_dir)
         U2 = spin_rotation(2,*self.__spin_dir)
@@ -473,7 +489,7 @@ class Solver:
         fullUs[:9,:9] = np.kron(qidentity(3),U1)
         fullUs[9:,9:] = np.kron(qidentity(2),U2)
         
-        soc_transf = fullUs @ fullUl
+        soc_transf = fullUs# @ fullUl
         
         return soc_transf @ subH @ soc_transf.dagg()
     
@@ -483,8 +499,13 @@ class Solver:
         q = ["x","y","z"].index(hop_dir)
         P = np.sum(moment_tensor(self.__ssd,self.__sdd,self.__pdd,self.__ddd)[:,q,:,:]*pol[None,:,None], axis=1)
         
+        # subH[9:,9:] += np.kron(P[3:],CG_2_p[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,0,None].dagg()) + np.kron(P[3:],CG_2_m[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,0,None].dagg())
+        # subH[:9,:9] += np.kron(P[:3],CG_1_p[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,0,None].dagg()) + np.kron(P[:3],CG_1_m[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,0,None].dagg())
+        # subH[9:,:9] += np.kron(P[3:],CG_2_p[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,0,None].dagg()) + np.kron(P[3:],CG_2_m[:,0,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,0,None].dagg())
+        # subH[:9,9:] += np.kron(P[:3],CG_1_p[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,0,None].dagg()) + np.kron(P[:3],CG_1_m[:,0,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,0,None].dagg())
+        
         for K in range(4):
-            for L in range(4):
+            for L in range(K,K+1):
                 subH[9:,9:] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[3:].dagg(),CG_2_m[:,K,None].dagg())
                 subH[:9,:9] += np.kron(P[:3],CG_1_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[:3],CG_1_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
                 subH[9:,:9] += np.kron(P[3:],CG_2_p[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_p[:,K,None].dagg()) + np.kron(P[3:],CG_2_m[:,L,None]) @ np.kron(P[:3].dagg(),CG_1_m[:,K,None].dagg())
@@ -517,8 +538,9 @@ class Solver:
     def solve(self, x):
         self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopL
         self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopR
-        rhoL = dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol)
-        rhoR = dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol)
+        #idx_shift = 0 if self.__dth >= 0 else 95
+        rhoL = 0.5*dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol) + 0.5*dos(x,self.HL,range(14+95,19+95),self.__dump,self.__T,self.__spin_pol)
+        rhoR = 0.5*dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol) + 0.5*dos(x,self.HR,range(14+95,19+95),self.__dump,self.__T,self.__spin_pol)
         
         return (rhoL+rhoR)/2, (rhoL-rhoR)/2
     

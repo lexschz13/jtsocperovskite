@@ -199,25 +199,40 @@ def tCG(U,CG,V):
 
 
 def spin_rotation(j,*n):
-    from scipy.special import factorial
-    def small_wigner(j,beta):
-        mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
-        d = np.zeros(mcol.shape)
-        s = np.maximum(0*mcol,mcol-mrow)
-        sfinal = np.minimum(j+mcol,j-mrow)
-        while (s<=sfinal).any():
-            wh = np.where(s<=sfinal)
-            krow = mrow[wh]
-            kcol = mcol[wh]
-            r = s[wh]
-            d[wh] += ((-1)**(krow-kcol+r) * (np.cos(beta/2))**(2*j+kcol-krow-2*r) * (np.sin(beta/2))**(krow-kcol+2*r)) / (factorial(j+kcol-r) * factorial(r) * factorial(krow-kcol+r) * factorial(j-krow-r))
-            s += 1
-        return mrow, np.sqrt(factorial(j+mrow) * factorial(j-mrow) * factorial(j+mcol) * factorial(j-mcol)) * d, mcol
+    mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
+    Sx = qzeros((2*j+1,2*j+1))
+    Sy = qzeros((2*j+1,2*j+1))
+    Sz = qzeros((2*j+1,2*j+1))
+    
+    Sx[:,:] = (1*(mrow==mcol+1) + 1*(mrow+1==mcol))*0.5*np.sqrt(j*(j+1) - mrow*mcol)
+    Sy[:,:] = (1*(mrow==mcol+1) - 1*(mrow+1==mcol))*0.5*np.sqrt(j*(j+1) - mrow*mcol)/1j
+    Sz[:,:] = mcol*(mcol==mrow)
     
     a,b,c = n
     N = np.sqrt(a**2+b**2+c**2)
-    theta = np.arccos(c/N)
-    phi = ((np.pi/2 + np.pi*(b<0))*(b!=0) if a==0 else np.arctan(b/a)) + np.pi*(a<0)
-    mrow, d, mcol = small_wigner(j, theta)
-    D = np.exp(-1j*phi*mrow) * d
-    return D #D.real*(D.real>=1e-15) + 1j*D.imag*(D.imag>=1e-15)
+    axis = np.array([-b,a + (a+b==0),0])/np.sqrt(a**2+b**2 + (a+b==0))
+    angle = np.arccos(c/N)
+    D = func_op(np.exp, -1j*angle*(axis[0]*Sx+axis[1]*Sy+axis[2]*Sz))
+    return D
+    # from scipy.special import factorial
+    # def small_wigner(j,beta):
+    #     mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
+    #     d = np.zeros(mcol.shape)
+    #     s = np.maximum(0*mcol,mcol-mrow)
+    #     sfinal = np.minimum(j+mcol,j-mrow)
+    #     while (s<=sfinal).any():
+    #         wh = np.where(s<=sfinal)
+    #         krow = mrow[wh]
+    #         kcol = mcol[wh]
+    #         r = s[wh]
+    #         d[wh] += ((-1)**(krow-kcol+r) * (np.cos(beta/2))**(2*j+kcol-krow-2*r) * (np.sin(beta/2))**(krow-kcol+2*r)) / (factorial(j+kcol-r) * factorial(r) * factorial(krow-kcol+r) * factorial(j-krow-r))
+    #         s += 1
+    #     return mrow, np.sqrt(factorial(j+mrow) * factorial(j-mrow) * factorial(j+mcol) * factorial(j-mcol)) * d, mcol
+    
+    # a,b,c = n
+    # N = np.sqrt(a**2+b**2+c**2)
+    # theta = np.arccos(c/N)
+    # phi = ((np.pi/2 + np.pi*(b<0))*(b!=0) if a==0 else np.arctan(b/a)) + np.pi*(a<0)
+    # mrow, d, mcol = small_wigner(j, theta)
+    # D = np.exp(-1j*phi*mrow) * d
+    # return D #D.real*(D.real>=1e-15) + 1j*D.imag*(D.imag>=1e-15)
