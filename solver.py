@@ -536,8 +536,8 @@ class Solver:
     ###############################################################################
     #Solving
     def solve(self, x):
-        self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopL
-        self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + self.__tpd**2/self.__CT*self.__HhopR
+        self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + 2*self.__tpd**2/self.__CT*self.__HhopL
+        self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + 2*self.__tpd**2/self.__CT*self.__HhopR
         #idx_shift = 0 if self.__dth >= 0 else 95
         rhoL = 0.5*dos(x,self.HL,range(14,19),self.__dump,self.__T,self.__spin_pol) + 0.5*dos(x,self.HL,range(14+95,19+95),self.__dump,self.__T,self.__spin_pol)
         rhoR = 0.5*dos(x,self.HR,range(14,19),self.__dump,self.__T,self.__spin_pol) + 0.5*dos(x,self.HR,range(14+95,19+95),self.__dump,self.__T,self.__spin_pol)
