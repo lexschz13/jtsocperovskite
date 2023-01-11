@@ -213,7 +213,7 @@ def spin_rotation(j,*n):
     axis = np.array([-b,a + (a+b==0),0])/np.sqrt(a**2+b**2 + (a+b==0))
     angle = np.arccos(c/N)
     D = func_op(np.exp, -1j*angle*(axis[0]*Sx+axis[1]*Sy+axis[2]*Sz))
-    return D
+    return D.dagg()
     # from scipy.special import factorial
     # def small_wigner(j,beta):
     #     mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
@@ -236,3 +236,9 @@ def spin_rotation(j,*n):
     # mrow, d, mcol = small_wigner(j, theta)
     # D = np.exp(-1j*phi*mrow) * d
     # return D #D.real*(D.real>=1e-15) + 1j*D.imag*(D.imag>=1e-15)
+
+
+def spin_rot_comp(j,n1,n2):
+    D1 = spin_rotation(j,*n1)
+    D2 = spin_rotation(j,*n2)
+    return D1.dagg() @ D2
