@@ -4,6 +4,27 @@ from .qarray import *
 
 
 def moment_tensor(A,B,C,D):
+    """
+    Computes the electromagnetig M-O hopping integrals for every d-orbital (chi), hopping direction (q), field polarization (alpha) and p-orbital (w).
+
+    Parameters
+    ----------
+    A : float
+        sigma sd
+    B : float
+        sigma dd
+    C : float
+        pi dd
+    D : float
+        delta dd
+
+    Returns
+    -------
+    ndarray
+        Hopping integrals.
+
+    """
+    
     #Pchi[q,w]
     k = np.sqrt(3)
     Pu = qarray([[-0.5*A-0.5/k*B,0,0],

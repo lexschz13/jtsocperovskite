@@ -10,6 +10,24 @@ from .random_spin import *
 
 
 def defaults(dfl, name, kdict):
+    """
+    Set default values for key arguments.
+
+    Parameters
+    ----------
+    dfl : any
+        Default value.
+    name : str
+        Key.
+    kdict : dict
+        Dictionary with key arguments.
+
+    Returns
+    -------
+    any
+        If key is not in dictionary is default value, else is the correspondent dict value.
+
+    """
     return dfl if not name in kdict else kdict[name]
 
 N = 19
@@ -18,7 +36,85 @@ Ns = 8
 
 
 class Solver:
+    """
+    Constructs a Hamiltonian and solve its spectral function for a given ensemmble.
+    
+    Attributes
+    ----------
+    delta : float
+        Crystal field energy. Default is 2.
+    FE : float
+        Linear ExE Jahn-Teller parameter. Default is 0.75.
+    GE : float
+        Quadratic ExE Jahn-Teller parameter. Defualt is 0.02.
+    FT : float
+        Linear TxE Jahn-Teller parameter. Default is 0.15.
+    dth : float
+        Deviation from tetragonal elongation in Jahn-Teller effect as polar coordinate in mexican hat. Default is 0.
+    xiSO : float
+        Spin-orbit coupling amlplitude. Default is 0.02.
+    kent : float
+        Kent parameter for random distribution of the spins. Default is inf.
+    tpd : float
+        Hopping amplitude. Default is 0.03.
+    CT : float
+        Charge transfer energy. Default is 4.2.
+    ssd : float
+        Slater-Koster parameter sigma sd. Default is 0.87.
+    sdd : float
+        Slater-Koster parameter sigma dd. Default is 0.65.
+    pdd : float
+        Slater-Koster parameter pi dd. Default is 0.48.
+    ddd : float
+        Slater-Koster parameter delta dd. Default is 0.13.
+    cut : array-like
+        Propagation direction of light. Default is [0,0,1].
+    dump : float
+        Dumping parameter of spectral function. Default is 0.02.
+    T : float
+        Temperatuere. Default is 260. Default is [0,0,1].
+    spin_dir : array-like
+        Center if spin random directions. Default is [0,0,1].
+    spin_pol : array-like
+        Distribution of spin states with S=2 (M=-2,...,+2). Default is [1,1,1,1,1].
+    
+    Static attributes
+    ----------
+    Ns : int
+        Number of atomic cells. Default is 8.
+    Henergy : ndarray
+        Crystal field Hamiltonian.
+    HJT : ndarray
+        Jahn-Teller Hamiltonian.
+    HSOC : ndarray
+        Spin-orbit coupling Hamiltonian.
+    HhopL : ndarray
+        Electromagnetic hopping effective Hamiltonian for left-circular polarization.
+    HhopR : ndarray
+        Electromagnetic hopping effective Hamiltonian for right-circular polarization.
+    
+    Methods
+    ----------
+    solve(x) :
+        Computes the spectral function for a given frequencies.
+    
+    """
     def __init__(self, *args, **kwargs):
+        """
+        Constructs the Hamiltonian.
+
+        Parameters
+        ----------
+        *args : tuple
+            Unusefull.
+        **kwargs : dict
+            Dictionary with all non-static attributes of the class passed as key arguments.
+
+        Returns
+        -------
+        None.
+
+        """
         #Energies diag
         self.__delta     = defaults(2, "delta", kwargs)
         #Jahn-Teler
@@ -298,7 +394,16 @@ class Solver:
     ################################################################################################
     #Hamiltonian construction
     
-    def __tan_sug(self, n):
+    def __tan_sug(self):
+        """
+        Constructs the crystal-field Hamiltonian.
+
+        Returns
+        -------
+        subH : ndarray
+            One-site Hamiltonian.
+
+        """
         subH = qzeros((N,N))
         #T1g
         subH[:9,:9] += self.__delta * qidentity(9)
@@ -310,6 +415,22 @@ class Solver:
         return subH
     
     def __jahn_teler(self, n, opposite=False):
+        """
+        
+
+        Parameters
+        ----------
+        n : int
+            Axis of tetragonal elongation [0,1,2]->[z,x,y].
+        opposite : bool, optional
+            Deviation from tetragonal elongation is clockwise (True) or anticlockwise (False). The default is False.
+
+        Returns
+        -------
+        subH : ndarray
+            One-site Hamiltonian.
+
+        """
         subH = qzeros((N,N))
         theta = n * 2*np.pi/3 + (-1)**(opposite)*self.__dth
         pauliz = qarray([[1,0],[0,-1]])
@@ -329,6 +450,20 @@ class Solver:
         return subH
     
     def __soc(self, site_spin_dir):
+        """
+        Constucts spin-orbit coupling Hamiltonian.
+
+        Parameters
+        ----------
+        site_spin_dir : array-like
+            Spin projection direction of the site.
+
+        Returns
+        -------
+        ndarray
+            One-site Hamiltonian.
+
+        """
         # subH = qarray([[np.sqrt(6),0,0, 0,0,0,  0,0,0,  -np.sqrt(6),0,0,0,0,  0,0,np.sqrt(6),0,0],
         #                 [0,0,0, 0,0,0, -1j*np.sqrt(6),0,0,  0,-np.sqrt(3),0,0,0,  0,0,0,3*np.sqrt(2),0],
         #                 [0,0,-np.sqrt(6), 0,0,0,  0,-1j*np.sqrt(6),0,  0,0,-1,0,0,  0,0,0,0,6],
@@ -380,9 +515,27 @@ class Solver:
         return soc_transf @ subH @ soc_transf.dagg()
     
     def __hop(self, hop_dir, pol, sites):
+        """
+        Constructs the electromagnetic hopping effective hamiltonian between two sites for a given light polarization.
+
+        Parameters
+        ----------
+        hop_dir : str
+            Direction of hopping x,y,z.
+        pol : ndarray
+            Polarization vector.
+        sites : tuple (int,int)
+            Sites of hopping.
+
+        Returns
+        -------
+        subH : ndarray
+            One-site Hamiltonian.
+
+        """
         subH = qzeros((N,N))
         
-        if not ((type(pol) is qarray) and (type(pol) is np.ndarray)):
+        if not ((type(pol) is qarray) and (type(pol) is np.ndarray)): #Normalizing polarization
             pol = qarray(pol)
             pol /= np.sqrt(np.sum(pol*pol.conj()))
         
@@ -411,6 +564,20 @@ class Solver:
         return subH
     
     def __fill_hop(self, pol):
+        """
+        Constructs electromagnetic hopping effective Hamiltonian for all system.
+
+        Parameters
+        ----------
+        pol : ndarray
+            Polarization vector.
+
+        Returns
+        -------
+        subH : ndarray
+            One-site Hamiltonian.
+
+        """
         subH = qzeros((N*Ns,N*Ns))
         subH[1*N:2*N,0*N:1*N] = self.__hop("x",pol,(1,0)); subH[0*N:1*N,1*N:2*N] = subH[1*N:2*N,0*N:1*N].dagg()
         subH[2*N:3*N,1*N:2*N] = self.__hop("y",pol,(2,1)); subH[1*N:2*N,2*N:3*N] = subH[2*N:3*N,1*N:2*N].dagg()
@@ -427,6 +594,9 @@ class Solver:
         return subH
     
     def __momentum_matrix(self, k):
+        """
+        Unused
+        """
         kx,ky,kz = k
         M = qzeros((kz.size,Ns*N,Ns*N))
         M[:,0*N:1*N,1*N:2*N] += 2*np.cos(kx)[:,None,None]
@@ -448,7 +618,23 @@ class Solver:
     
     ###############################################################################
     #Solving
-    def solve(self, x):#, dim=[1,1,1]):
+    def solve(self, x):
+        """
+        Solve spectral functions f the Hamiltonian for a given frequencies
+
+        Parameters
+        ----------
+        x : float, array-like
+            Frequencies in eV.
+
+        Returns
+        -------
+        ndarray
+            Non-gyrotropic signal.
+        ndarray
+            Gyrotrpic signal.
+
+        """
         print(self.__xiSO)
         self.HL = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + 2*self.__tpd**2/self.__CT*self.__HhopL
         self.HR = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC + 2*self.__tpd**2/self.__CT*self.__HhopR
@@ -538,6 +724,9 @@ class Solver:
         return (rhoL+rhoR)/2, (rhoL-rhoR)/2
     
     def current_correl(self, x, eps=4.5):
+        """
+        Unused
+        """
         self.H0 = self.__Henergy + self.__HJT + self.__xiSO*self.__HSOC
         currL = self.__fill_hop([1,0,0])#(rot_eps(*self.__cut)[0])
         currR = self.__fill_hop([0,1,0])#(rot_eps(*self.__cut)[1])

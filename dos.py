@@ -9,6 +9,30 @@ kB = 8.617333262e-5
 
 
 def dos(x, H, idxs, dump, T, ensemble):
+    """
+    Computes the spectral function for a given Hamiltonian and an ensemble.
+
+    Parameters
+    ----------
+    x : array-like
+        Frequencies.
+    H : ndarray
+        Hamiltonian.
+    idxs : array-like
+        Orbitals referred for ensemble.
+    dump : float
+        Dumping term.
+    T : float
+        Temperature.
+    ensemble : array-like
+        Ensemble.
+
+    Returns
+    -------
+    ndarray
+        Spectral function.
+
+    """
     if type(x) is not np.ndarray:
         x = np.array([x])
     
@@ -30,6 +54,9 @@ def dos(x, H, idxs, dump, T, ensemble):
 
 
 def correl(x, H0, A, W, dump, T):
+    """
+    Unused
+    """
     w,U = np.linalg.eigh(H0)
     w -= w[0]
     wn,wm = np.meshgrid(w,w)

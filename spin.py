@@ -2,6 +2,12 @@ from .imports import *
 from .qarray import *
 
 
+"""
+This file contains spin matrices for S=1 and S=2 and some Clebsch-Gordan coefficients.
+Non-documented functions are unused.
+"""
+
+
 S2x = qzeros((5,5))
 S2x[0,1] = 1            ; S2x[1,0] = 1
 S2x[1,2] = np.sqrt(1.5) ; S2x[2,1] = np.sqrt(1.5)
@@ -199,15 +205,31 @@ def tCG(U,CG,V):
 
 
 def spin_rotation(j,*n):
+    """
+    Generates a rotation matrix for spinors to rotate from z axis to n axis.
+
+    Parameters
+    ----------
+    j : int
+        Spin quantum number.
+    *n : tuple, list
+        Axis to rotate.
+
+    Returns
+    -------
+    ndarray
+        Rotation matrix.
+
+    """
     mcol,mrow = np.meshgrid(np.arange(j,-j-1,-1),np.arange(j,-j-1,-1))
     Sx = qzeros((2*j+1,2*j+1))
     Sy = qzeros((2*j+1,2*j+1))
     Sz = qzeros((2*j+1,2*j+1))
-    
+    # Spin matrices
     Sx[:,:] = (1*(mrow==mcol+1) + 1*(mrow+1==mcol))*0.5*np.sqrt(j*(j+1) - mrow*mcol)
     Sy[:,:] = (1*(mrow==mcol+1) - 1*(mrow+1==mcol))*0.5*np.sqrt(j*(j+1) - mrow*mcol)/1j
     Sz[:,:] = mcol*(mcol==mrow)
-    
+    #Generating rotation axis, perpendicular to z and n, and rotation angle
     a,b,c = n
     N = np.sqrt(a**2+b**2+c**2)
     axis = np.array([-b,a + (a+b==0),0])/np.sqrt(a**2+b**2 + (a+b==0))
