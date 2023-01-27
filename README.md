@@ -1,8 +1,5 @@
 # Jahn-Teller effect with spin-orbit coupling and electromagnetic intersite hoppings
 
-This package computes the system described in https://doi.org/10.1103/PhysRevB.106.165108.
-
-The Solver class creates a system with 2x2x2 metal sites with periodical boundary conditions.
-Every metal site is described with 19 orbitals.
-The system takes into account the cooperative Jahn-Teller effects.
-The package have the possibility to make a random distribution of the spins of every metal site following the Kent distribution.
+This package computes the interaction of an electromagnetic field with the system described in https://doi.org/10.1103/PhysRevB.106.165108.
+It consists of a transition metal with electrons in d-orbitals surrounded by six oxygen ligands, forming an octahedral coordinated systems that corresponds to the unit cell of a perovskite. The Solver class creates a system with 2x2x2 metal sites with periodical boundary conditions.
+Every metal site is described with 19 orbitals. The model asssumes that the interaction with the magnetic field induces electron transfer in a lattice. During the photoinduced transfer, the system takes into account cooperative Jahn-Teller effects. To calculate the photoinduced hopping amplitudes, the relative orientation of spins with respect to Jahn-Teller elongations is taken into account, as well as the propagation direction of light and its polarization. The package has the possibility to make a random distribution of the spins of every metal site following a Kent distribution.
