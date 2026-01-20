@@ -4,6 +4,6 @@
   month = {12},
   title = {{Jahn-Teller effect and spin-orbit coupling with electromagnetic hoppings in perovskites}},
   url = {https://github.com/lexschz13/jtsocperovskite},
-  version = {1.0.2},
+  version = {1.0.1},
   year = {2023}
 }
